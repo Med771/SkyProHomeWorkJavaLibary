@@ -13,7 +13,7 @@ import java.util.HashSet;
 @Service
 public final class EmployeeService {
     private final int lengthOfEmployee = 1000;
-    private final HashSet<Employee> employees = new HashSet<Employee>();
+    private final HashSet<Employee> employees = new HashSet<Employee>(lengthOfEmployee);
 
     // Add method
     public Employee addEmployee(String firstName, String lastName)
