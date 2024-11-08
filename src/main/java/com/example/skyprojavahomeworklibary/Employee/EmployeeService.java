@@ -5,8 +5,11 @@ import objects.Employee;
 import exceptions.EmployeeNotFoundException;
 import exceptions.EmployeeAlreadyAddedException;
 import exceptions.EmployeeStorageIsFullException;
+import exceptions.EmployeeNotNameOrSurnameException;
 
 import org.springframework.stereotype.Service;
+
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.HashSet;
 
@@ -17,7 +20,11 @@ public final class EmployeeService {
 
     // Add method
     public Employee addEmployee(String firstName, String lastName)
-            throws EmployeeAlreadyAddedException, EmployeeStorageIsFullException {
+            throws EmployeeAlreadyAddedException, EmployeeStorageIsFullException, EmployeeNotNameOrSurnameException {
+        if (StringUtils.isBlank(firstName) || StringUtils.isBlank(lastName)) {
+            throw new EmployeeNotNameOrSurnameException("Name or Surname cannot be empty");
+        }
+
         Employee employee = new Employee(firstName, lastName);
 
         if (employees.size() == lengthOfEmployee) {
@@ -35,7 +42,11 @@ public final class EmployeeService {
 
     // Remove method
     public Employee removeEmployee(String firstName, String lastName)
-            throws EmployeeNotFoundException {
+            throws EmployeeNotFoundException, EmployeeNotNameOrSurnameException {
+        if (StringUtils.isBlank(firstName) || StringUtils.isBlank(lastName)) {
+            throw new EmployeeNotNameOrSurnameException("Name or Surname cannot be empty");
+        }
+
         Employee employee = new Employee(firstName, lastName);
 
         boolean isRemoved = employees.remove(employee);
@@ -49,7 +60,11 @@ public final class EmployeeService {
 
     // Find method
     public Employee findEmployee(String firstName, String lastName)
-            throws EmployeeNotFoundException {
+            throws EmployeeNotFoundException, EmployeeNotNameOrSurnameException {
+        if (StringUtils.isBlank(firstName) || StringUtils.isBlank(lastName)) {
+            throw new EmployeeNotNameOrSurnameException("Name or Surname cannot be empty");
+        }
+
         Employee employee = new Employee(firstName, lastName);
 
         for (Employee e : employees) {
