@@ -8,12 +8,13 @@ import exceptions.EmployeeStorageIsFullException;
 
 import org.springframework.stereotype.Service;
 
-import java.util.HashSet;
+import java.util.HashMap;
+import java.util.Map;
 
 @Service
 public final class EmployeeService {
     private final int lengthOfEmployee = 1000;
-    private final HashSet<Employee> employees = new HashSet<Employee>(lengthOfEmployee);
+    private final Map<String, Employee> employees = new HashMap<>(lengthOfEmployee);
 
     // Add method
     public Employee addEmployee(String firstName, String lastName)
@@ -24,11 +25,11 @@ public final class EmployeeService {
             throw new EmployeeStorageIsFullException("Employee Storage is Full");
         }
 
-        boolean isAdded = employees.add(employee);
-
-        if (!isAdded) {
+        if (employees.get(firstName+lastName) != null) {
             throw new EmployeeAlreadyAddedException("Employee already added");
         }
+
+        employees.put(firstName+lastName, employee);
 
         return employee;
     }
@@ -38,11 +39,11 @@ public final class EmployeeService {
             throws EmployeeNotFoundException {
         Employee employee = new Employee(firstName, lastName);
 
-        boolean isRemoved = employees.remove(employee);
-
-        if (!isRemoved) {
+        if (employees.get(firstName+lastName) == null) {
             throw new EmployeeNotFoundException("Employee not found");
         }
+
+        employees.remove(firstName+lastName);
 
         return employee;
     }
@@ -50,20 +51,13 @@ public final class EmployeeService {
     // Find method
     public Employee findEmployee(String firstName, String lastName)
             throws EmployeeNotFoundException {
-        Employee employee = new Employee(firstName, lastName);
+        Employee employee = employees.get(firstName+lastName);
 
-        for (Employee e : employees) {
-            if (e.equals(employee)) {
-                return employee;
-            }
+        if (employee == null) {
+            throw new EmployeeNotFoundException("Employee not found");
         }
 
-        throw new EmployeeNotFoundException("Employee not found");
-    }
-
-    // Display method
-    public HashSet<Employee> getAllEmployees() {
-        return employees;
+        return employee;
     }
 
     // Get methods
@@ -71,7 +65,7 @@ public final class EmployeeService {
         return lengthOfEmployee;
     }
 
-    public HashSet<Employee> getEmployees() {
+    public Map<String, Employee> getEmployees() {
         return employees;
     }
 }
